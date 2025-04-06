@@ -1,5 +1,5 @@
 {
-  "name": "jsdiscordbot",
+  "name": "js_discordbot",
   "version": "1.0.0",
   "description": "Basic Discord Bot made in JS",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FiXsyy/JSDiscordBot.git"
+    "url": "git+https://github.com/FiXsyy/JS_DiscordBot.git"
   },
   "author": "FiXsy",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/FiXsyy/JSDiscordBot/issues"
+    "url": "https://github.com/FiXsyy/JS_DiscordBot/issues"
   },
-  "homepage": "https://github.com/FiXsyy/JSDiscordBot#readme",
+  "homepage": "https://github.com/FiXsyy/JS_DiscordBot#readme",
   "dependencies": {
     "discord.js": "^14.18.0"
   }
