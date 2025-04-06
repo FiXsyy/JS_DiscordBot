@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -9,23 +9,47 @@ module.exports = {
             .setDescription('Provides information about the user.')
             .addUserOption(option => option
                 .setName('target')
-                .setDescription('Targetted user')))
+                .setDescription('Targetted user'))
+            .addBooleanOption(option => option
+                .setName('ephemeral')
+                .setDescription('Makes the command only visible to you.')))
         .addSubcommand(subcommand => subcommand
             .setName('server')
-            .setDescription('Provides information about the server.')),
+            .setDescription('Provides information about the server.')
+            .addBooleanOption(option => option
+                .setName('ephemeral')
+                .setDescription('Makes the command only visible to you.'))),
     async execute(interaction){
         if(interaction.options.getSubcommand() === 'user'){
             const user = interaction.options.getUser('target');
+            const ephemeral = interaction.options.getBoolean('ephemeral') ?? false;
 
-            if(user){
-                await interaction.reply(`Username: ${user.username}\nID: ${user.id}`);
+            if(!ephemeral){
+                if(user){   
+                    await interaction.reply(`Username: ${user.username}\nID: ${user.id}`);
+                }
+                else{
+                    await interaction.reply(`Your username: ${interaction.user.username}\nYour ID: ${interaction.user.id}`);
+                }
             }
             else{
-                await interaction.reply(`Your username: ${interaction.user.username}\nYour ID: ${interaction.user.id}`);
+                if(user){
+                    await interaction.reply({content: `Username: ${user.username}\nID: ${user.id}`, flags: MessageFlags.Ephemeral});
+                }
+                else{
+                    await interaction.reply({content: `Your username: ${interaction.user.username}\nYour ID: ${interaction.user.id}`, flags: MessageFlags.Ephemeral});
+                }
             }
         }
         else if(interaction.options.getSubcommand() === 'server'){
-            await interaction.reply(`Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`);
+            const ephemeral = interaction.options.getBoolean('ephemeral') ?? false;
+
+            if(!ephemeral){
+                await interaction.reply(`Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`);
+            }
+            else{
+                await interaction.reply({content: `Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`, flags: MessageFlags.Ephemeral});
+            }
         }
     },
 };
