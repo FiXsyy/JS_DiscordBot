@@ -5,7 +5,12 @@ const { Client, Collection, Events, GatewayIntentBits, MessageFlags } = require(
 const { token } = require('./config.json');
 
 //  New client instance + attaching the commands to it (so they can be used in other files)
-const client = new Client({ intents: [GatewayIntentBits.Guilds]} );
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages
+    ]
+});
 client.commands = new Collection();
 
 //  Looks through folders in search for commands + adds them to the commands collection
