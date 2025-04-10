@@ -1,25 +1,25 @@
-//  Require for discord.js classes + Discord Token from config.json
-const fs = require('node:fs');              //  native file system module - used to read the commands directory
-const path = require('node:path');          //  native path utility module - helps construct paths to files and directories (works for every os as well)
-const { Client, Collection, Events, GatewayIntentBits, MessageFlags } = require('discord.js');
+//  Require discord.js classes, imports some node modules, and gets the Discord Token from config.json
+const fs = require('node:fs');          //  used to read the commands directory
+const path = require('node:path');      //  helps construct paths to files and directories (works for every os)
+const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
 
-//  New client instance + attaching the commands to it (so they can be used in other files)
+//  New client instance, setting intents
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages
     ]
 });
-client.commands = new Collection();
 
-//  Looks through folders in search for commands + adds them to the commands collection
+//  Looks through folders in search for commands and adds them to the commands collection
+client.commands = new Collection();
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
 for(const folder of commandFolders){
     const commandsPath = path.join(foldersPath, folder);
-    const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('js'));
+    const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
     for(const file of commandFiles){
         const filePath = path.join(commandsPath, file);
@@ -34,34 +34,19 @@ for(const folder of commandFolders){
     }
 }
 
-//  Executes once at the start of the script
-client.once(Events.ClientReady, readyClient => {
-    console.log(`Bot succesfully logged in as ${readyClient.user.tag}`);
-});
+//  Looks through directory for events
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
-//  Executes on every interaction
-client.on(Events.InteractionCreate, async interaction => {
-    if(!interaction.isChatInputCommand()) return;
-
-	const command = interaction.client.commands.get(interaction.commandName);
-
-    if(!command){
-        console.error(`No command matching ${interaction.commandName} was found.`)
-        return;
+for(const file of eventFiles){
+    const filePath = path.join(eventsPath, file);
+    const event = require(filePath);
+    if(event.once){
+        client.once(event.name, (...args) => event.execute(...args));
     }
-
-    try{
-        await command.execute(interaction);
+    else{
+        client.on(event.name, (...args) => event.execute(...args));
     }
-    catch(error){
-        console.error(error);
-        if(interaction.replied || interaction.deferred){
-            await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
-        }
-        else{
-            await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
-        }
-    }
-});
+}
 
 client.login(token);
