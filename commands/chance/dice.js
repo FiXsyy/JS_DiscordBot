@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,11 +16,18 @@ module.exports = {
         const die_number = interaction.options.getInteger('die_number') ?? 1;
         const sides_number = interaction.options.getInteger('sides_number') ?? 6;
 
+        const embed = new EmbedBuilder()
+            .setColor(0x00ffff)
+            .setTitle(`Results for ${die_number}D${sides_number}`)
+            .setDescription('something')
+            .setThumbnail('https://i.imgur.com/WUtSx6C.png');
+
         var total = 0;
         var rolls = [];
 
         if(die_number == 1){
-            await interaction.reply(`Results for 1D${sides_number}\nYou rolled: ${Math.ceil(Math.random() * sides_number)}`);
+            let newEmbed = EmbedBuilder.from(embed).setDescription(`**You rolled:** ${Math.ceil(Math.random() * sides_number)}`); 
+            await interaction.reply({embeds: [newEmbed]});
             return;
         }
 
@@ -30,6 +37,7 @@ module.exports = {
             rolls.push(roll);
         }
 
-        await interaction.reply(`Results for ${die_number}D${sides_number}\nYou rolled: ${rolls.map(value => value).join(', ')}\nTotal: ${total}`)
+        let newEmbed = EmbedBuilder.from(embed).setDescription(`**You rolled:**\n${rolls.map(value => value).join(', ')}\n\n**Total:** ${total}`);
+        await interaction.reply({embeds: [newEmbed]});
     },
 };
