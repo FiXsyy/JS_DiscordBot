@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { rollImg } = require('../../config.json')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -20,7 +21,7 @@ module.exports = {
             .setColor(0x00ffff)
             .setTitle(`Results for ${die_number}D${sides_number}`)
             .setDescription('something')
-            .setThumbnail('https://i.imgur.com/WUtSx6C.png');
+            .setThumbnail(rollImg);
 
         var total = 0;
         var rolls = [];

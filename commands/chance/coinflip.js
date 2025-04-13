@@ -1,4 +1,5 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { coinImg } = require('../../config.json')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -7,44 +8,36 @@ module.exports = {
         .addIntegerOption(option => option
             .setName('flip_number')
             .setDescription('Number of times you want to flip the coin.')
-            .setMinValue(1))
-        .addBooleanOption(option => option
-            .setName('descriptive')
-            .setDescription('Gives more info about the coinflips.')),
+            .setMinValue(1)),
     async execute(interaction){
         const flip_number = interaction.options.getInteger('flip_number') ?? 1;
-        const descriptive = interaction.options.getBoolean('descriptive') ?? false;
         
+        const embed = new EmbedBuilder()
+                    .setColor(0xffcc00)
+                    .setTitle('Title')
+                    .setDescription('Description')
+                    .setThumbnail(coinImg);
+
         var total_heads = 0;
         var rolls = [];
 
-        if(descriptive){
-            if(flip_number == 1){
-                await interaction.reply(`Results for 1 Flip\nYou flipped: ${Math.floor(Math.random() * 2) ? 'Heads' : 'Tails'}`);
-                return;
-            }
-
-            for(let i = 0; i < flip_number; ++i){
-                let roll = Math.floor(Math.random() * 2);
-                total_heads += roll;
-                rolls.push(roll ? 'Heads' : 'Tails');
-            }
-
-            await interaction.reply(`Results for ${flip_number} Flips\nYou flipped: ${rolls.map(value => value).join(', ')}\nTotal: ${total_heads} Heads, ${flip_number - total_heads} Tails`);
+        if(flip_number == 1){
+            let newEmbed = EmbedBuilder.from(embed)
+                .setTitle('Results for 1 Flip')
+                .setDescription(`**You flipped:** ${Math.floor(Math.random() * 2) ? 'Heads' : 'Tails'}`); 
+            await interaction.reply({embeds: [newEmbed]});
+            return;
         }
-        else{
-            if(flip_number == 1){
-                await interaction.reply(`${Math.floor(Math.random() * 2) ? 'Heads' : 'Tails'}`);
-                return;
-            }
 
-            for(let i = 0; i < flip_number; ++i){
-                let roll = Math.floor(Math.random() * 2);
-                total_heads += roll;
-                rolls.push(roll ? 'Heads' : 'Tails');
-            }
-
-            await interaction.reply(`Results for ${flip_number} Flips\nTotal: ${total_heads} Heads, ${flip_number - total_heads} Tails`);
+        for(let i = 0; i < flip_number; ++i){
+            let roll = Math.floor(Math.random() * 2);
+            total_heads += roll;
+            rolls.push(roll ? 'Heads' : 'Tails');
         }
+
+        let newEmbed = EmbedBuilder.from(embed)
+            .setTitle(`Results for ${flip_number} Flips`)
+            .setDescription(`**You flipped:**\n${rolls.map(value => value).join(', ')}\n\n**Total:** ${total_heads} Heads, ${flip_number - total_heads} Tails`); 
+        await interaction.reply({embeds: [newEmbed]});
     },
 };
