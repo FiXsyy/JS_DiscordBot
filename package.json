@@ -1,21 +1,21 @@
 {
-  "name": "js_discordbot",
+  "name": "shulerbot",
   "version": "1.0.0",
-  "description": "Basic Discord Bot made in JS",
+  "description": "A Discord Bot that Flips Coins, Rolls Dice, and more!",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FiXsyy/JS_DiscordBot.git"
+    "url": "git+https://github.com/FiXsyy/ShulerBot.git"
   },
   "author": "FiXsy",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/FiXsyy/JS_DiscordBot/issues"
+    "url": "https://github.com/FiXsyy/ShulerBot/issues"
   },
-  "homepage": "https://github.com/FiXsyy/JS_DiscordBot#readme",
+  "homepage": "https://github.com/FiXsyy/ShulerBot#readme",
   "dependencies": {
     "discord.js": "^14.18.0"
   }
