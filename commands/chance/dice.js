@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { rollImg } = require('../../config.json')
+const { rollImg } = require('../../config.json');
 
 module.exports = {
     data: new SlashCommandBuilder()
