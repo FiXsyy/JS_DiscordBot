@@ -12,7 +12,14 @@ module.exports = {
         .addIntegerOption(option => option
             .setName('sides_number')
             .setDescription('Number of sides on every die')
-            .setMinValue(3)),
+            .setMinValue(3)
+            .setAutocomplete(true)),
+    async autocomplete(interaction){
+        const focusedValue = interaction.options.getFocused();
+        const choices = ['20', '12', '10', '8', '6', '4'];
+        const filtered = choices.filter(choice => choice.startsWith(focusedValue));
+        await interaction.respond(filtered.map(choice => ({name: choice, value: choice})));
+    },
     async execute(interaction){
         //  Gives die_number and sides_number values as set in options and gives them default values if nothing was set
         const die_number = interaction.options.getInteger('die_number') ?? 1;
