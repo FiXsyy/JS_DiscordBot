@@ -10,6 +10,7 @@ module.exports = {
             .setDescription('Number of times you want to flip the coin.')
             .setMinValue(1)),
     async execute(interaction){
+        //  Gives flip_number a value as set in options and gives it a default value if nothing was set
         const flip_number = interaction.options.getInteger('flip_number') ?? 1;
         
         //  Creates a new embed
@@ -55,15 +56,15 @@ module.exports = {
             .setDescription(`**Total:** ${total_heads} Heads, ${flip_number - total_heads} Tails`); 
         const response = await interaction.reply({embeds: [newEmbed], components: [row], withResponse: true});
 
-        //  Awaits button press
+        //  Awaits button press, then adds more info to embed and hides the button
         const collectionFilter = i => i.user.id === interaction.user.id;
         try{
-            const confirmation = await response.resource.message.awaitMessageComponent({filter: collectionFilter, time: 60_000});
+            const buttonPressed = await response.resource.message.awaitMessageComponent({filter: collectionFilter, time: 60_000});
 
-            if(confirmation.customId === 'info'){
+            if(buttonPressed.customId === 'info'){
                 let descriptiveEmbed = EmbedBuilder.from(newEmbed)
                     .setDescription(`**You flipped:**\n${rolls.map(value => value).join(', ')}\n\n**Total:** ${total_heads} Heads, ${flip_number - total_heads} Tails`); 
-                await confirmation.update({embeds: [descriptiveEmbed], components: []});
+                await buttonPressed.update({embeds: [descriptiveEmbed], components: []});
             }
         }
         catch{
