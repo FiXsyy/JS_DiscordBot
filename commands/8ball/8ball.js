@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const responses = require('./8ball.json');
 
 module.exports = {
+    cooldown: 10,
     data: new SlashCommandBuilder()
         .setName('8ball')
         .setDescription('Ask the Magic 8 Ball a question.'),

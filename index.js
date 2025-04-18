@@ -12,6 +12,9 @@ const client = new Client({
     ]
 });
 
+//  Collection containing all the command cooldowns
+client.cooldowns = new Collection();
+
 //  Looks through folders in search for commands and adds them to the commands collection
 client.commands = new Collection();
 const foldersPath = path.join(__dirname, 'commands');
